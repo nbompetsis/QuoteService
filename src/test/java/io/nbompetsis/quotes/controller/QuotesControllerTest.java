@@ -37,12 +37,12 @@ public class QuotesControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
 
-	private ObjectMapper om = new ObjectMapper();
+	private final ObjectMapper om = new ObjectMapper();
 
 	@Test
 	public void createQuote() throws Exception {
 		QuoteRequestDTO request = new QuoteRequestDTO("Oscar Wilde", "The truth is rarely pure and never simple.");
-		Quote quote = new Quote(1l, request.getAuthor(), request.getText());
+		Quote quote = new Quote(1L, request.getAuthor(), request.getText());
 
 		Mockito.when(service.createQuote(request.getAuthor(), request.getText())).thenReturn(quote);
 
@@ -59,7 +59,7 @@ public class QuotesControllerTest {
 	@Test
 	public void updateQuote() throws Exception {
 		QuoteRequestDTO request = new QuoteRequestDTO("OSCAR", "UPDATED Quote.");
-		Quote quote = new Quote(1l, "OSCAR", "UPDATED Quote.");
+		Quote quote = new Quote(1L, "OSCAR", "UPDATED Quote.");
 
 		Mockito.when(service.updateQuote(quote)).thenReturn(quote);
 
@@ -76,7 +76,7 @@ public class QuotesControllerTest {
 	@Test
 	public void shouldNotUpdateQuoteNotFound() throws Exception {
 		QuoteRequestDTO request = new QuoteRequestDTO("OSCAR", "UPDATED Quote.");
-		Quote quote = new Quote(1l, "OSCAR", "UPDATED Quote.");
+		Quote quote = new Quote(1L, "OSCAR", "UPDATED Quote.");
 
 		Mockito.when(service.updateQuote(quote)).thenThrow(new QuoteNotFoundException());
 
@@ -88,9 +88,9 @@ public class QuotesControllerTest {
 
 	@Test
 	public void getQuote() throws Exception {
-		Quote quote = new Quote(1l, "Oscar Wilde", "The truth is rarely pure and never simple.");
+		Quote quote = new Quote(1L, "Oscar Wilde", "The truth is rarely pure and never simple.");
 
-		Mockito.when(service.getQuote(1l)).thenReturn(quote);
+		Mockito.when(service.getQuote(1L)).thenReturn(quote);
 
 		mockMvc.perform(get("/quote/1")).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.content().contentType("application/json"))
@@ -101,14 +101,14 @@ public class QuotesControllerTest {
 
 	@Test
 	public void quoteNotFound() throws Exception {
-		Mockito.when(service.getQuote(1l)).thenThrow(new QuoteNotFoundException());
+		Mockito.when(service.getQuote(1L)).thenThrow(new QuoteNotFoundException());
 
 		mockMvc.perform(get("/quote/1")).andExpect(status().isNotFound());
 	}
 
 	@Test
 	public void getARandomQuote() throws Exception {
-		Quote quote = new Quote(10l, "Nikos Bompetsis", "Life is good :)");
+		Quote quote = new Quote(10L, "Nikos Bompetsis", "Life is good :)");
 
 		Mockito.when(service.randomQuote()).thenReturn(quote);
 
@@ -123,17 +123,17 @@ public class QuotesControllerTest {
 	public void deleteQuote() throws Exception {
 		mockMvc.perform(delete("/quote/1")).andExpect(status().isOk());
 		
-		Mockito.verify(service, Mockito.times(1)).deleteQuote(1l);
+		Mockito.verify(service, Mockito.times(1)).deleteQuote(1L);
 	}
 	
 	@Test
 	public void getAllQuotes() throws Exception {
-		Quote quote1 = new Quote(1l, "Oscar Wilde", "The truth is rarely pure and never simple.");
-		Quote quote2 = new Quote(2l, "Nikos Bompetsis", "Life is good :)");
+		Quote quote1 = new Quote(1L, "Oscar Wilde", "The truth is rarely pure and never simple.");
+		Quote quote2 = new Quote(2L, "Nikos Bompetsis", "Life is good :)");
 		Pageable pageable = PageRequest.of(0, 5);
 		List<Quote> quotes = List.of(quote1, quote2);
 
-		Mockito.when(service.allQuotes(pageable)).thenReturn(new PageImpl<Quote>(quotes));
+		Mockito.when(service.allQuotes(pageable)).thenReturn(new PageImpl<>(quotes));
 
 		mockMvc.perform(get("/quote/all")).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.content().contentType("application/json"))
@@ -152,11 +152,11 @@ public class QuotesControllerTest {
 	
 	@Test
 	public void discoverQuotesContainingSpecificText() throws Exception {
-		Quote quote1 = new Quote(1l, "Oscar Wilde", "The truth is rarely pure and never simple.");
+		Quote quote1 = new Quote(1L, "Oscar Wilde", "The truth is rarely pure and never simple.");
 		Pageable pageable = PageRequest.of(0, 5);
 		List<Quote> quotes = List.of(quote1);
 
-		Mockito.when(service.discoverQuotes("truth", pageable)).thenReturn(new PageImpl<Quote>(quotes));
+		Mockito.when(service.discoverQuotes("truth", pageable)).thenReturn(new PageImpl<>(quotes));
 
 		mockMvc.perform(get("/quote/discover/truth")).andExpect(status().isOk())
 				.andExpect(MockMvcResultMatchers.content().contentType("application/json"))

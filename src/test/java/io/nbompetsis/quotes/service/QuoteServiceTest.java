@@ -48,34 +48,32 @@ class QuoteServiceTest {
 	}
 
 	@Test
-	public void updateQuote() throws Exception {
-		Quote oldquote = new Quote(1l, "OSCAR", "Old Quote.");
-		Quote quote = new Quote(1l, "OSCAR", "Updated Quote.");
+	public void updateQuote() {
+		Quote oldQuote = new Quote(1L, "OSCAR", "Old Quote.");
+		Quote quote = new Quote(1L, "OSCAR", "Updated Quote.");
 
-		Mockito.when(repository.findById(quote.getId())).thenReturn(Optional.of(oldquote));
+		Mockito.when(repository.findById(quote.getId())).thenReturn(Optional.of(oldQuote));
 		Mockito.when(repository.save(quote)).thenReturn(quote);
 
 		service.updateQuote(quote);
 	}
 
 	@Test
-	public void throwsOnUpdateQuote() throws Exception {
-		Quote quote = new Quote(1l, "OSCAR", "Updated Quote.");
+	public void throwsOnUpdateQuote() {
+		Quote quote = new Quote(1L, "OSCAR", "Updated Quote.");
 
 		Mockito.when(repository.findById(quote.getId()))
 				.thenThrow(new QuoteNotFoundException(String.format("Quote with id %d not found", quote.getId())));
 
-		Assertions.assertThrows(QuoteNotFoundException.class, () -> {
-			service.updateQuote(quote);
-		});
+		Assertions.assertThrows(QuoteNotFoundException.class, () -> service.updateQuote(quote));
 
 		Mockito.verify(repository, Mockito.times(0)).save(quote);
 
 	}
 
 	@Test
-	public void getQuote() throws Exception {
-		Quote quote = new Quote(1l, "Oscar Wilde", "The truth is rarely pure and never simple.");
+	public void getQuote() {
+		Quote quote = new Quote(1L, "Oscar Wilde", "The truth is rarely pure and never simple.");
 
 		Mockito.when(repository.findById(quote.getId())).thenReturn(Optional.of(quote));
 
@@ -83,20 +81,18 @@ class QuoteServiceTest {
 	}
 
 	@Test
-	public void throwsOnGetQuote() throws Exception {
-		Quote quote = new Quote(1l, "Oscar Wilde", "The truth is rarely pure and never simple.");
+	public void throwsOnGetQuote() {
+		Quote quote = new Quote(1L, "Oscar Wilde", "The truth is rarely pure and never simple.");
 
 		Mockito.when(repository.findById(quote.getId()))
 				.thenThrow(new QuoteNotFoundException(String.format("Quote with id %d not found", quote.getId())));
 
-		Assertions.assertThrows(QuoteNotFoundException.class, () -> {
-			service.getQuote(quote.getId());
-		});
+		Assertions.assertThrows(QuoteNotFoundException.class, () -> service.getQuote(quote.getId()));
 	}
 
 	@Test
-	public void getARandomQuote() throws Exception {
-		Quote quote = new Quote(1l, "Oscar Wilde", "The truth is rarely pure and never simple.");
+	public void getARandomQuote() {
+		Quote quote = new Quote(1L, "Oscar Wilde", "The truth is rarely pure and never simple.");
 
 		Mockito.when(repository.randomQuote()).thenReturn(quote);
 
@@ -104,60 +100,58 @@ class QuoteServiceTest {
 	}
 
 	@Test
-	public void deleteQuote() throws Exception {
-		service.deleteQuote(1l);
+	public void deleteQuote() {
+		service.deleteQuote(1L);
 
-		Mockito.verify(repository, Mockito.times(1)).deleteById(1l);
+		Mockito.verify(repository, Mockito.times(1)).deleteById(1L);
 	}
 
 	@Test
-	public void throwsOnDeleteQuote() throws Exception {
+	public void throwsOnDeleteQuote() {
 
-		Mockito.doThrow(new EmptyResultDataAccessException(0)).when(repository).deleteById(1l);
+		Mockito.doThrow(new EmptyResultDataAccessException(0)).when(repository).deleteById(1L);
 
-		Assertions.assertThrows(QuoteNotFoundException.class, () -> {
-			service.deleteQuote(1l);
-		});
+		Assertions.assertThrows(QuoteNotFoundException.class, () -> service.deleteQuote(1L));
 
-		Mockito.verify(repository, Mockito.times(1)).deleteById(1l);
+		Mockito.verify(repository, Mockito.times(1)).deleteById(1L);
 	}
 
 	@Test
-	public void getAllQuotes() throws Exception {
-		Quote quote1 = new Quote(1l, "Oscar Wilde", "The truth is rarely pure and never simple.");
-		Quote quote2 = new Quote(2l, "Nikos Bompetsis", "Life is good :)");
+	public void getAllQuotes() {
+		Quote quote1 = new Quote(1L, "Oscar Wilde", "The truth is rarely pure and never simple.");
+		Quote quote2 = new Quote(2L, "Nikos Bompetsis", "Life is good :)");
 		Pageable pageable = PageRequest.of(0, 5);
 		List<Quote> quotes = List.of(quote1, quote2);
 		
 
-		Mockito.when(repository.findAll(pageable)).thenReturn(new PageImpl<Quote>(quotes));
+		Mockito.when(repository.findAll(pageable)).thenReturn(new PageImpl<>(quotes));
 		
 		Page<Quote> returnedQuotes = service.allQuotes(pageable);
 		
-		assertThat(returnedQuotes.getTotalElements(), is(2l));
+		assertThat(returnedQuotes.getTotalElements(), is(2L));
 		assertThat(returnedQuotes.getContent().size(), is(2));
-		assertThat(returnedQuotes.getContent().get(0).getId(), is(1l));
+		assertThat(returnedQuotes.getContent().get(0).getId(), is(1L));
 		assertThat(returnedQuotes.getContent().get(0).getAuthor(), is("Oscar Wilde"));
 		assertThat(returnedQuotes.getContent().get(0).getText(), is("The truth is rarely pure and never simple."));
 		
-		assertThat(returnedQuotes.getContent().get(1).getId(), is(2l));
+		assertThat(returnedQuotes.getContent().get(1).getId(), is(2L));
 		assertThat(returnedQuotes.getContent().get(1).getAuthor(), is("Nikos Bompetsis"));
 		assertThat(returnedQuotes.getContent().get(1).getText(), is("Life is good :)"));
 	}
 	
 	@Test
-	public void discoverQuotesContainingSpecificText() throws Exception {
-		Quote quote1 = new Quote(1l, "Oscar Wilde", "The truth is rarely pure and never simple.");
+	public void discoverQuotesContainingSpecificText() {
+		Quote quote1 = new Quote(1L, "Oscar Wilde", "The truth is rarely pure and never simple.");
 		Pageable pageable = PageRequest.of(0, 5);
 		List<Quote> quotes = List.of(quote1);
 		
-		Mockito.when(repository.findByTextContaining("truth", pageable)).thenReturn(new PageImpl<Quote>(quotes));
+		Mockito.when(repository.findByTextContaining("truth", pageable)).thenReturn(new PageImpl<>(quotes));
 		
 		Page<Quote> returnedQuotes = service.discoverQuotes("truth", pageable);
 		
-		assertThat(returnedQuotes.getTotalElements(), is(1l));
+		assertThat(returnedQuotes.getTotalElements(), is(1L));
 		assertThat(returnedQuotes.getContent().size(), is(1));
-		assertThat(returnedQuotes.getContent().get(0).getId(), is(1l));
+		assertThat(returnedQuotes.getContent().get(0).getId(), is(1L));
 		assertThat(returnedQuotes.getContent().get(0).getAuthor(), is("Oscar Wilde"));
 		assertThat(returnedQuotes.getContent().get(0).getText(), is("The truth is rarely pure and never simple."));
 		

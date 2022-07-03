@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 
 import io.nbompetsis.quotes.exception.QuoteNotFoundException;
 import io.nbompetsis.quotes.model.Quote;
-import io.nbompetsis.quotes.repository.QuoteRepository;;
+import io.nbompetsis.quotes.repository.QuoteRepository;
 
 @Component
 public class QuoteServiceImpl implements QuoteService {
 	
 	private final QuoteRepository repository;
-	
+
 	@Autowired
 	public QuoteServiceImpl(QuoteRepository repository) {
 		this.repository = repository;
